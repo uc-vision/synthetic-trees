@@ -1,11 +1,13 @@
 # synthetic-trees
+
+# Library Installation
+
 Synthetic tree dataset, links to data and scripts for processing and evaluation.
 
+# Download Dataset
 
-
-# data links
 Links to data goes here.
 
+# Script Usage
 
-# scripts
 Instructions for processing/use as a library goes here.
