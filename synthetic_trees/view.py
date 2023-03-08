@@ -1,5 +1,6 @@
 import os
 import argparse
+import argcomplete
 
 from typing import List, Tuple
 
@@ -13,12 +14,18 @@ from synthetic_trees.util.o3d_abstractions import o3d_viewer
 
 
 def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]]):
-    geometries = []
-    for cloud, skeleton in data:
+    geometries, names = [], []
+    for (cloud, skeleton), path in data:
+          
+        tree_name = path.split(".")[0]
+        
+        names.append(f"{tree_name}_cloud")
+        names.append(f"{tree_name}_skeleton")
+
         geometries.append(cloud.to_o3d_cloud())
         geometries.append(skeleton.to_o3d_lineset())
 
-    o3d_viewer(geometries)
+    o3d_viewer(geometries, names)
 
 
 def parse_args():
@@ -38,12 +45,12 @@ def main():
     args = parse_args()
 
     if args.file_path is not None:
-        data: List[Tuple[Cloud, TreeSkeleton]
-                   ] = [load_data_npz(args.file_path)]
+        data: List[Tuple[Tuple[Cloud, TreeSkeleton], str]
+                   ] = [load_data_npz(args.file_path), args.file_path]
 
-    if args.directory is not None:
-        data: List[Tuple[Cloud, TreeSkeleton]] = [load_data_npz(f"{args.directory}/{path}")
-                                                  for path in os.listdir(args.directory)]
+    if args.directory is not None:          
+        data: List[Tuple[Tuple[Cloud, TreeSkeleton], str]] = [(load_data_npz(os.path.join(args.directory,path)), path)
+                                                  for path in os.listdir(args.directory) if path.split(".")[1] =="npz"]
 
     view_synthetic_data(data)
 

@@ -1,5 +1,4 @@
 import numpy as np
-import torch
 
 from dataclasses import dataclass
 from synthetic_trees.util.o3d_abstractions import o3d_cloud

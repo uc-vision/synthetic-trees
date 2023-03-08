@@ -60,9 +60,9 @@ def o3d_viewer(items, names=[], line_width=1):
     for name, item in zip(names, items):
         if type(item) == o3d.cuda.pybind.geometry.LineSet:
             geometries.append(
-                {"name": f"{name}", "geometry": item, "material": line_mat})
+                {"name": f"{name}", "geometry": item, "material": line_mat, "is_visible": False})
         else:
             geometries.append(
-                {"name": f"{name}", "geometry": item, "material": mat})
+                {"name": f"{name}", "geometry": item, "material": mat, "is_visible": False})
 
-    o3d.visualization.draw(geometries)
+    o3d.visualization.draw(geometries, line_width=line_width)
