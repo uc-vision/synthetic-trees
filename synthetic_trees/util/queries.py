@@ -5,6 +5,9 @@ from typing import List
 from data_types.tube import Tube, CollatedTube, collate_tubes
 
 
+from pykeops.torch import LazyTensor
+
+
 """ 
 For the following :
   N : number of pts

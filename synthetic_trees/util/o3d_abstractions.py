@@ -1,4 +1,6 @@
 import open3d as o3d
+import open3d.ml.torch as ml3d
+
 import numpy as np
 
 from .math import unit_circle, vertex_dirs, gen_tangents, random_unit
@@ -113,6 +115,12 @@ def o3d_tube_mesh(points, radii, colour=(1,0,0), n=10):
 def o3d_load_lineset(path, colour=[0,0,0]):
 
   return o3d.io.read_line_set(path).paint_uniform_color(colour)
+
+
+def o3d_nn(points, query_pts, query_radius, return_distances=True):
+  nsearch = ml3d.nn.RadiusSearch(return_distances=True)
+  idx, count, dist = nsearch(points, query_pts, query_radius)
+  return idx, count, dist
 
 
 def o3d_viewer(items, names=[], line_width=1):

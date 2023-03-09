@@ -11,8 +11,10 @@ from data_types.tree import TreeSkeleton, repair_skeleton
 from data_types.cloud import Cloud
 
 from util.file import load_data_npz
-from util.o3d_abstractions import o3d_viewer, o3d_load_lineset
+from util.o3d_abstractions import o3d_viewer, o3d_load_lineset, o3d_nn
+
 from util.operations import sample_o3d_lineset
+from util.misc import to_torch
 
 
 def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geometry.LineSet, sample_rate=0.01):
@@ -22,6 +24,10 @@ def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geo
   gt_xyzs, gt_radii = skeleton.point_sample(sample_rate)
   
   output_pts = sample_o3d_lineset(output_skeleton, sample_rate)
+  
+  gt_xyzs_c, gt_radii_c, output_pts_c = to_torch([gt_xyzs, gt_radii, output_pts], device=torch.device("cuda"))
+  
+  o3d_nn(output_pts_c, gt_xyzs_c, gt_radii_c)
   
   #geometries = []
   #geometries.append()
