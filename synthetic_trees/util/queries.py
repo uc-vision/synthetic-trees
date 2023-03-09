@@ -2,7 +2,7 @@ import numpy as np
 
 from typing import List
 
-from ..data_types.tube import Tube, CollatedTube, collate_tubes
+from data_types.tube import Tube, CollatedTube, collate_tubes
 
 
 """ 

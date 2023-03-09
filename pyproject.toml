@@ -15,7 +15,7 @@ dependencies = [
     'numpy',
     'open3d==0.15.2',
     'pykeops',
-    "argcomplete"
+    'torch==1.13.1'
     ]
 dynamic = ["version"]
 

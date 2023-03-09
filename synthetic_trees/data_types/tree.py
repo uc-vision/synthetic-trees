@@ -5,12 +5,12 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import List, Dict
 
-from synthetic_trees.util.o3d_abstractions import o3d_merge_linesets, o3d_merge_meshes
-from synthetic_trees.util.misc import flatten_list
+from util.o3d_abstractions import o3d_merge_linesets, o3d_merge_meshes
+from util.misc import flatten_list
 
-from .operations import sample_tubes
-from .branch import BranchSkeleton
-from .tube import Tube
+from util.operations import sample_tubes
+from data_types.branch import BranchSkeleton
+from data_types.tube import Tube
 
 
 @dataclass
@@ -62,25 +62,25 @@ def repair_skeleton(skeleton: TreeSkeleton):
   return skeleton
 
 
-# def prune_skeleton(skeleton: TreeSkeleton, min_radius_threshold=1, length_threshold=5, root_id=0):
-#   """ In the skeleton format we are using each branch only knows it's parent 
-#       but not it's child (could work this out by doing a traversal). If a branch doesn't
-#       meet the initial radius threshold or length threshold we want to remove it and all
-#       it's predecessors... 
-#       Because of the way the skeleton is initalized however we know that earlier branches
-#       are guaranteed to be of lower order.
-#       minimum_radius_threshold: some point of the branch must be above this to not remove the branch
-#       length_threshold: the total length of the branch must be greater than this point
-#   """
-#   branches_to_keep = {root_id: skeleton.branches[root_id]}
+def prune_skeleton(skeleton: TreeSkeleton, min_radius_threshold=0.01, length_threshold=0.02, root_id=1):
+   """ In the skeleton format we are using each branch only knows it's parent 
+       but not it's child (could work this out by doing a traversal). If a branch doesn't
+       meet the initial radius threshold or length threshold we want to remove it and all
+       it's predecessors... 
+       Because of the way the skeleton is initalized however we know that earlier branches
+       are guaranteed to be of lower order.
+       minimum_radius_threshold: some point of the branch must be above this to not remove the branch
+       length_threshold: the total length of the branch must be greater than this point
+   """
+   branches_to_keep = {root_id: skeleton.branches[root_id]}
 
-#   for branch_id, branch in skeleton.branches.items():
+   for branch_id, branch in skeleton.branches.items():
+   
+     if branch.parent_id == -1:
+       continue
     
-#     if branch.parent_id == -1:
-#       continue
-    
-#     if branch.parent_id in branches_to_keep:
-#       if branch.length > length_threshold and branch.radii[0] > min_radius_threshold:
-#         branches_to_keep[branch_id] = branch
+     if branch.parent_id in branches_to_keep:
+       if branch.length > length_threshold and branch.radii[0] > min_radius_threshold:
+         branches_to_keep[branch_id] = branch
 
-#   return TreeSkeleton(skeleton._id, branches_to_keep)
+   return TreeSkeleton(skeleton._id, branches_to_keep)

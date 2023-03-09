@@ -2,19 +2,7 @@ import numpy as np
 
 from typing import List
 
-from .tube import Tube
-
-# from Prescient_Tree.geometries.conversion import tree_skeleton_as_tubes, branch_skeleton_as_tubes
-# from Prescient_Tree.geometries.tube import Tube
-# from Prescient_Tree.geometries.branch import BranchSkeleton
-
-# from Prescient_Tree.util.math.maths import np_normalized
-# from Prescient_Tree.util.math.queries import pts_to_nearest_tube, pts_to_nearest_tube_keops, skeleton_to_points
-
-
-
-
-
+from data_types.tube import Tube
 
 
 def sample_tubes(tubes: List[Tube], spacing):
@@ -44,3 +32,30 @@ def sample_tubes(tubes: List[Tube], spacing):
       radius.append(lin_radius)
       
   return  np.concatenate(pts, axis=0), np.concatenate(radius, axis=0)
+
+
+def sample_o3d_lineset(ls, sample_rate):
+    
+  edges = np.asarray(ls.lines)
+  xyz = np.asarray(ls.points)
+  
+  pts, radius = [], []
+
+  for i, edge in enumerate(edges):
+   
+    start = xyz[edge[0]]
+    end = xyz[edge[1]]
+              
+    v = end - start 
+    length = np.linalg.norm(v)
+    direction = v / length
+    num_points = np.ceil(length / sample_rate)
+    
+    if int(num_points) > 0.0:
+
+      spaced_points = np.arange(0, float(length),  step=float(length/num_points)).reshape(-1,1)
+      pts.append(start + direction * spaced_points)   
+      
+  return  np.concatenate(pts, axis=0)
+  
+  

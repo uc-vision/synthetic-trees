@@ -5,10 +5,10 @@ import open3d as o3d
 from dataclasses import dataclass
 from typing import List, Dict
 
-from .tube import Tube
+from data_types.tube import Tube
 from synthetic_trees.util.o3d_abstractions import o3d_path, o3d_tube_mesh
 
-from ..util.queries import pts_on_nearest_tube
+from util.queries import pts_on_nearest_tube
 
 @dataclass
 class BranchSkeleton:
