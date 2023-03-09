@@ -110,6 +110,11 @@ def o3d_tube_mesh(points, radii, colour=(1,0,0), n=10):
   return mesh.paint_uniform_color(colour)
 
 
+def o3d_load_lineset(path, colour=[0,0,0]):
+
+  return o3d.io.read_line_set(path).paint_uniform_color(colour)
+
+
 def o3d_viewer(items, names=[], line_width=1):
 
     mat = o3d.visualization.rendering.MaterialRecord()
