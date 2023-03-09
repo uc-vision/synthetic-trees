@@ -6,17 +6,16 @@ import argparse
 import open3d
 
 
-from synthetic_trees.data_types.tree import TreeSkeleton
+from synthetic_trees.data_types.tree import TreeSkeleton, repair_skeleton
 from synthetic_trees.data_types.cloud import Cloud
 from synthetic_trees.util.file import load_data_npz
 from synthetic_trees.util.o3d_abstractions import o3d_viewer
-from synthetic_trees.data_types.operations import repair_skeleton
 
 
-def evaluate_one(cld: Cloud, skeleton: TreeSkeleton, ls):
+def evaluate_one(cld: Cloud, skeleton: TreeSkeleton, ls, sample_rate=0.01):
       
   skeleton = repair_skeleton(skeleton)
-  #gt_xyzs, gt_radii 
+  gt_xyzs, gt_radii = skeleton.point_sample(sample_rate)
   
   #geometries.append(skeleton.to_o3d_lineset())
 
@@ -29,7 +28,6 @@ def evaluate(data: List[Tuple[Cloud, TreeSkeleton]]):
     geometries, names = [], []
     for (cloud, skeleton), path in data:
         evaluate_one(cloud, skeleton, path) 
-
 
 
 def parse_args():
