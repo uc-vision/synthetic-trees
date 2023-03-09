@@ -8,7 +8,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Downloader Arguments")
 
     parser.add_argument("-d", "--directory",
-                        help="Directory of download trees to.", 
+                        help="Tree download directory.", 
                         required=False,
                         default="dataset", type=str)
 
@@ -21,6 +21,8 @@ def main():
 
 	if not os.path.isdir(args.directory):
 		os.mkdir(args.directory)
+  
+	 	# download to that directory
 
 
 

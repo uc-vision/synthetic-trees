@@ -4,7 +4,7 @@ import open3d as o3d
 from dataclasses import dataclass
 from typing import List, Dict
 
-from synthetic_trees.util.o3d_abstractions import o3d_merge_linesets
+from synthetic_trees.util.o3d_abstractions import o3d_merge_linesets, o3d_merge_meshes
 
 from .branch import BranchSkeleton
 
@@ -22,3 +22,6 @@ class TreeSkeleton:
 
     def to_o3d_lineset(self) -> o3d.cuda.pybind.geometry.LineSet:
         return o3d_merge_linesets([branch.to_o3d_lineset() for branch in self.branches.values()])
+    
+    def to_o3d_mesh(self) -> o3d.cuda.pybind.geometry.TriangleMesh:
+        return o3d_merge_meshes([branch.to_o3d_tube() for branch in self.branches.values()])

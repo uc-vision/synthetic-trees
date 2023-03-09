@@ -1,6 +1,5 @@
 import os
 import argparse
-import argcomplete
 
 from typing import List, Tuple
 
@@ -13,7 +12,7 @@ from synthetic_trees.util.file import load_data_npz
 from synthetic_trees.util.o3d_abstractions import o3d_viewer
 
 
-def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]]):
+def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]], line_width=1):
     geometries, names = [], []
     for (cloud, skeleton), path in data:
           
@@ -21,11 +20,14 @@ def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]]):
         
         names.append(f"{tree_name}_cloud")
         names.append(f"{tree_name}_skeleton")
+        names.append(f"{tree_name}_skeleton_mesh")
 
         geometries.append(cloud.to_o3d_cloud())
         geometries.append(skeleton.to_o3d_lineset())
+        geometries.append(skeleton.to_o3d_mesh())
 
-    o3d_viewer(geometries, names)
+
+    o3d_viewer(geometries, names, line_width=line_width)
 
 
 def parse_args():
@@ -36,7 +38,8 @@ def parse_args():
                         help="File Path of tree.npz", default=None, type=str)
     parser.add_argument("-d", "--directory",
                         help="Directory of folder of tree.npz(s)", default=None, type=str)
-
+    parser.add_argument("-lw", "--line_width",
+                        help="Width of visualizer lines", default=1, type=int)
     return parser.parse_args()
 
 
@@ -46,13 +49,13 @@ def main():
 
     if args.file_path is not None:
         data: List[Tuple[Tuple[Cloud, TreeSkeleton], str]
-                   ] = [load_data_npz(args.file_path), args.file_path]
+                   ] = [(load_data_npz(args.file_path), args.file_path)]
 
     if args.directory is not None:          
         data: List[Tuple[Tuple[Cloud, TreeSkeleton], str]] = [(load_data_npz(os.path.join(args.directory,path)), path)
                                                   for path in os.listdir(args.directory) if path.split(".")[1] =="npz"]
 
-    view_synthetic_data(data)
+    view_synthetic_data(data, args.line_width)
 
 
 if __name__ == "__main__":

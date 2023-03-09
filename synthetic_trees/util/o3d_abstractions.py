@@ -1,6 +1,7 @@
 import open3d as o3d
 import numpy as np
 
+from .math import unit_circle, vertex_dirs, gen_tangents, random_unit
 
 def o3d_cloud(points, colour=None, colours=None, normals=None):
 
@@ -42,6 +43,71 @@ def o3d_path(vertices, colour=None):
     if colour is not None:
         return o3d_line_set(vertices, edge_idx, colour)
     return o3d_line_set(vertices, edge_idx)
+
+
+def o3d_merge_meshes(meshes):
+      
+    sizes = [np.asarray(mesh.vertices).shape[0] for mesh in meshes]
+    offsets = np.cumsum([0] + sizes)
+
+    part_indexes = np.repeat(np.arange(0, len(meshes)), sizes)
+      
+    triangles = np.concatenate([mesh.triangles + offset for offset, mesh in zip(offsets, meshes)])
+    vertices = np.concatenate([mesh.vertices for mesh in meshes])
+
+    mesh = o3d_mesh(vertices, triangles)
+    mesh.vertex_colors = o3d.utility.Vector3dVector(np.concatenate([np.asarray(mesh.vertex_colors) for mesh in meshes]))
+    return mesh
+
+
+def o3d_mesh(verts, tris):
+    return o3d.geometry.TriangleMesh(o3d.utility.Vector3dVector(verts), o3d.utility.Vector3iVector(tris)).compute_triangle_normals()
+
+
+def cylinder_triangles(m, n):
+    
+  tri1 = np.array([0, 1, 2])
+  tri2 = np.array([2, 3, 0])
+
+  v0 = np.arange(m)
+  v1 = (v0 + 1) % m
+  v2 = v1 + m
+  v3 = v0 + m
+
+  edges = np.stack([v0, v1, v2, v3], axis=1) 
+ 
+  segments = np.arange(n - 1) * m
+  edges = edges.reshape(1, *edges.shape) + segments.reshape(n - 1, 1, 1)
+
+  edges = edges.reshape(-1, 4)
+  return np.concatenate( [edges[:, tri1], edges[:, tri2]] )
+
+
+def tube_vertices(points, radii, n=10):
+
+  circle = unit_circle(n).astype(np.float32)
+
+  dirs = vertex_dirs(points)
+  t = gen_tangents(dirs, random_unit())
+
+  b = np.stack([t, np.cross(t, dirs)], axis=1)
+  b = b * radii.reshape(-1, 1, 1)
+
+  return np.einsum('bdx,md->bmx', b, circle)\
+     + points.reshape(points.shape[0], 1, 3)
+
+
+def o3d_tube_mesh(points, radii, colour=(1,0,0), n=10):
+
+  points = tube_vertices(points, radii, n)
+
+  n, m, _ = points.shape
+  indexes = cylinder_triangles(m, n)
+
+  mesh = o3d_mesh(points.reshape(-1, 3), indexes)
+  mesh.compute_vertex_normals()
+
+  return mesh.paint_uniform_color(colour)
 
 
 def o3d_viewer(items, names=[], line_width=1):
