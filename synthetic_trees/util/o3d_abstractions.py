@@ -1,5 +1,4 @@
 import open3d as o3d
-import open3d.ml.torch as ml3d
 
 import numpy as np
 

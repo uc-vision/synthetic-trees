@@ -15,8 +15,7 @@ dependencies = [
     'numpy',
     'open3d==0.16',
     'pykeops',
-    'torch@https://download.pytorch.org/whl/cu116/torch-1.13.1%2Bcu116-cp38-cp38-linux_x86_64.whl' # needs to be work with
-    ]
+    'torch']
 dynamic = ["version"]
 
 [tool.setuptools.packages]

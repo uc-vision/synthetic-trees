@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+import frnn
 
 from typing import List
 
@@ -50,3 +52,25 @@ def pts_on_nearest_tube(pts:np.array, tubes: List[Tube]):
   
   vectors, index, radius = pts_to_nearest_tube(pts, tubes)
   return pts + vectors, radius
+
+
+def knn(src, dest, K=50, r=1.0, grid=None):
+    src_lengths = src.new_tensor([src.shape[0]], dtype=torch.long)
+    dest_lengths = src.new_tensor([dest.shape[0]], dtype=torch.long)
+    dists, idxs, grid, _ = frnn.frnn_grid_points(
+        src.unsqueeze(0), dest.unsqueeze(0), 
+        src_lengths, dest_lengths,
+        K, r,return_nn=False, return_sorted=True)
+
+    return idxs.squeeze(0), dists.sqrt().squeeze(0), grid
+  
+
+def nn_frnn(src, dest, r=1.0, grid=None):
+  idx, dist, grid = knn(src, dest, K=1, r=r, grid=grid)
+  idx, dist = idx.squeeze(1), dist.squeeze(1)
+
+  return idx, dist, grid
+
+
+
+  

@@ -5,7 +5,11 @@ from typing import List
 from data_types.tube import Tube
 
 
-def sample_tubes(tubes: List[Tube], spacing):
+
+  
+
+
+def sample_tubes(tubes: List[Tube], sample_rate):
            
   pts, radius = [], []
 
@@ -19,18 +23,18 @@ def sample_tubes(tubes: List[Tube], spacing):
           
     v = end - start 
     length = np.linalg.norm(v)
-    
     direction = v / length
-    num_points = np.ceil(length / spacing)
+    num_pts = int(np.round(length / sample_rate))
     
-    if int(num_points) > 0.0:
-  
-      spaced_points = np.arange(0, float(length),  step=float(length/num_points)).reshape(-1,1)
-      lin_radius = np.linspace(start_rad, end_rad, spaced_points.shape[0], dtype=float)
+    if num_pts > 0:
+    
+      spaced_points = np.linspace(0, length, num_pts).reshape(-1,1) #np.arange(0, float(length),  step=float(sample_rate)).reshape(-1,1)
       
+      lin_radius = np.linspace(start_rad, end_rad, spaced_points.shape[0], dtype=float)
+    
       pts.append(start + direction * spaced_points)   
       radius.append(lin_radius)
-      
+        
   return  np.concatenate(pts, axis=0), np.concatenate(radius, axis=0)
 
 
@@ -48,12 +52,12 @@ def sample_o3d_lineset(ls, sample_rate):
               
     v = end - start 
     length = np.linalg.norm(v)
-    direction = v / length
-    num_points = np.ceil(length / sample_rate)
-    
-    if int(num_points) > 0.0:
+    direction = v / length   
+    num_pts = int(np.round(length / sample_rate))
 
-      spaced_points = np.arange(0, float(length),  step=float(length/num_points)).reshape(-1,1)
+    if num_pts > 0:
+
+      spaced_points = np.linspace(0, length, num_pts).reshape(-1,1) #np.arange(0, float(length),  step=float(sample_rate)).reshape(-1,1)
       pts.append(start + direction * spaced_points)   
       
   return  np.concatenate(pts, axis=0)

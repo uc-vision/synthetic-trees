@@ -35,10 +35,7 @@ class BranchSkeleton:
    
     def closest_pt(self, pt: np.array): # closest point on skeleton to query point
       return pts_on_nearest_tube(pt, self.to_tubes())
-    
-    def point_sample(self, sampling_rate=0.001) -> o3d.cuda.pybind.geometry.PointCloud:
-      pts, radii = [], []
-    
+        
     def to_o3d_lineset(self, colour=(0, 0, 0)) -> o3d.cuda.pybind.geometry.LineSet:
       return o3d_path(self.xyz, colour)
 
