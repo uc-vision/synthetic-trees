@@ -5,10 +5,6 @@ from typing import List
 from data_types.tube import Tube
 
 
-
-  
-
-
 def sample_tubes(tubes: List[Tube], sample_rate):
            
   pts, radius = [], []

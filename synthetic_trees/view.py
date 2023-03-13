@@ -15,20 +15,20 @@ from synthetic_trees.util.o3d_abstractions import o3d_viewer
 
 
 def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]], names=[], line_width=1):
-    geometries, names = [], []
-    for (cloud, skeleton), path in data:
+  geometries, names = [], []
+  for (cloud, skeleton), path in data:
+        
+    tree_name = path.stem
           
-        tree_name = path.stem
-              
-        names.append(f"{tree_name}_cloud")
-        names.append(f"{tree_name}_skeleton")
-        names.append(f"{tree_name}_skeleton_mesh")
+    names.append(f"{tree_name}_cloud")
+    names.append(f"{tree_name}_skeleton")
+    names.append(f"{tree_name}_skeleton_mesh")
 
-        geometries.append(cloud.to_o3d_cloud())
-        geometries.append(skeleton.to_o3d_lineset())
-        geometries.append(skeleton.to_o3d_tubes())
+    geometries.append(cloud.to_o3d_cloud())
+    geometries.append(skeleton.to_o3d_lineset())
+    geometries.append(skeleton.to_o3d_tubes())
 
-    o3d_viewer(geometries, names, line_width=line_width)
+  o3d_viewer(geometries, names, line_width=line_width)
 
 
 def parse_args():

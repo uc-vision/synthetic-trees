@@ -4,7 +4,6 @@ import frnn
 from util.queries import nn_frnn, nn_keops
 
 
-
 def recall(gt_points, test_points, gt_radii, thresholds=[0.1]): # recall (completeness)
 
   results = []
@@ -23,7 +22,7 @@ def recall(gt_points, test_points, gt_radii, thresholds=[0.1]): # recall (comple
   return results
 
 
-def precision(gt_points, test_points, gt_radii, thresholds=[0.1]): # precision (how close / accurate)
+def precision(gt_points, test_points, gt_radii, thresholds=[0.1]): # precision (how close)
 
   results = []
   dist, idx = nn_keops(test_points, gt_points)
@@ -41,12 +40,10 @@ def precision(gt_points, test_points, gt_radii, thresholds=[0.1]): # precision (
   return results
 
 
-
 # def recall(gt_points, test_points, gt_radii, threshold=1.0):
 #   idxs, dists, _ = nn(gt_points, test_points, r=gt_radii.max().item()) 
 #   valid_idx = idxs[idxs != -1]
-#   valid = (dists[valid_idx] < gt_radii[valid_idx] * threshold)
-  
+#   valid = (dists[valid_idx] < gt_radii[valid_idx] * threshold) 
 #   return (torch.sum(valid).cpu().item() / gt_points.shape[0]) * 100
 
 
@@ -56,5 +53,4 @@ def precision(gt_points, test_points, gt_radii, thresholds=[0.1]): # precision (
 #   valid = dists[valid_idx] < gt_radii[valid_idx] * threshold
 
 #   print(torch.sum(torch.isnan(valid.cpu())))
-
 #   return (torch.sum(valid.cpu()).item() / test_points.shape[0]) * 100

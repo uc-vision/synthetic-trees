@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from typing import List, Tuple
 from pathlib import Path
@@ -7,20 +8,24 @@ import argparse
 import torch
 import open3d as o3d
 
+from tqdm import tqdm
 
 from data_types.tree import TreeSkeleton, repair_skeleton
 from data_types.cloud import Cloud
 
 from util.file import load_data_npz
 from util.o3d_abstractions import o3d_viewer, o3d_load_lineset, o3d_nn, o3d_cloud
+from evaluation.results import save_results
 
 from util.operations import sample_o3d_lineset
 from util.misc import to_torch
 from evaluation.metrics import recall, precision
 
 
-def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geometry.LineSet, sample_rate=0.01):
-      
+def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geometry.LineSet, thresholds=np.linspace(0,1,100), sample_rate=0.001):
+  
+  results = {}
+  
   skeleton = repair_skeleton(gt_skeleton)
   
   gt_xyzs, gt_radii = skeleton.point_sample(sample_rate)
@@ -31,18 +36,13 @@ def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geo
   
   gt_xyzs_c, gt_radii_c, output_pts_c = to_torch([gt_xyzs, gt_radii, output_pts], device=torch.device("cuda"))
 
+  results["recall"] = recall(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=thresholds)
+  results["precision"] = precision(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=thresholds)
+  results['thresholds'] = thresholds
   
-  print(recall(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=[0.5]))
-  print(precision(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=[0.5]))
+  return results  
   
   
-    
-  #geometries = []
-  #geometries.append()
-
-  #o3d_viewer(geometries)
-
-
 def gt_skeleton_generator(paths: List[Path]) -> Tuple[Cloud, TreeSkeleton]:
     for path in paths:
       yield load_data_npz(path)[1]
@@ -62,6 +62,9 @@ def parse_args():
     parser.add_argument("-d_o", "--output_dir",
                         help="Directory of folder of skeleton outputs *.ply", default=None, type=str)
 
+    parser.add_argument("-r_o", "--results_save_path",
+                        help="Path to save results csv to", default="results.csv", type=str, required=False)
+
     return parser.parse_args()
 
 
@@ -80,20 +83,13 @@ def main():
     gt_paths = sorted([p for p in ground_truth_paths if p.stem in tree_names]) #[30:]
     output_paths = sorted([p for p in output_paths if p.stem in tree_names]) #[30:]
 
+    results = {}
     
-    for gt_skeleton, output_skeleton in zip(gt_skeleton_generator(gt_paths), output_skeleton_generator(output_paths)):
+    for gt_skeleton, output_skeleton, tree_name in tqdm(zip(gt_skeleton_generator(gt_paths), output_skeleton_generator(output_paths), tree_names)):
 
-      evaluate_one(gt_skeleton, output_skeleton, sample_rate=0.01)
-      
-      #print(gt_paths)
-
-      #print(output_skeleton)
-      #print(gt_skeleton)
-  
-          
+      results[f"{tree_name}"] = evaluate_one(gt_skeleton, output_skeleton, sample_rate=0.001)
     
-    #evaluate(data)
-
+    save_results(results, args.results_save_path)
 
 if __name__ == "__main__":
     main()
