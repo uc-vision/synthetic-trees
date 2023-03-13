@@ -32,7 +32,7 @@ def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geo
   
   output_pts = sample_o3d_lineset(output_skeleton, sample_rate)
   
-  o3d_viewer([o3d_cloud(gt_xyzs, colour=(0,1,0)), o3d_cloud(output_pts, colour=(1,0,0)), skeleton.to_o3d_lineset()])
+  #o3d_viewer([o3d_cloud(gt_xyzs, colour=(0,1,0)), o3d_cloud(output_pts, colour=(1,0,0)), skeleton.to_o3d_lineset()])
   
   gt_xyzs_c, gt_radii_c, output_pts_c = to_torch([gt_xyzs, gt_radii, output_pts], device=torch.device("cuda"))
 
@@ -74,7 +74,7 @@ def main():
 
     ground_truth_paths = list(Path(args.ground_truth_dir).glob("*.npz"))
     output_paths = list(Path(args.output_dir).glob("*.ply"))
-
+    
     ground_truth_tree_names = [path.stem for path in ground_truth_paths]
     output_tree_names = [path.stem for path in output_paths]
 

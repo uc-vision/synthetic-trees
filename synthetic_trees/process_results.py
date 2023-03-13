@@ -1,10 +1,14 @@
 import os
 import pandas as pd
 
+
 import argparse
 
+import matplotlib.pyplot as plt
 
+from util.math import calculate_AuC
 
+    
 def parse_args():
     
     parser = argparse.ArgumentParser(description="Results directory.")
@@ -24,26 +28,22 @@ def main():
 
   df = pd.read_csv(args.directory)
   
-  df["f1 score"] = 2 * ((df["recall"] * df["precision"]) / (df["recall"] + df["precision"]))
+  df["f1"] = (2 * ((df["recall"] * df["precision"]) / (df["recall"] + df["precision"]))).fillna(0)
 
   df = df.round(2)
 
-  print(df.describe())
-  df.plot()
-
-  df = df.groupby("threshold").agg("mean")
+  df = df.groupby("threshold").agg("mean", numeric_only=True)
   
-  df.plot()
-  
-
-  df.describe()
+  print(f"F1 AUC: {calculate_AuC(df['f1'])}")
+  print(f"Recall AUC: {calculate_AuC(df['recall'])}")
+  print(f"Precision AUC: {calculate_AuC(df['precision'])}")
 
   #download to that directory
+  ax = df.plot()
+  ax.set_ylim(0, 100)
+  ax.set_xlim(0, 1)
 
-
-
-
-
+  plt.show()
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import trapz
 
 
 def make_tangent(d, n):
@@ -37,3 +38,7 @@ def gen_tangents(dirs, t):
 def random_unit(dtype=np.float32):
   x =  np.random.randn(3).astype(dtype)
   return x / np.linalg.norm(x)
+
+
+def calculate_AuC(y, dx=0.01):
+  return trapz(y=y, dx=dx)
