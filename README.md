@@ -28,11 +28,11 @@ using:
 TODO
 ```
 
-Alternatively, the data can be downloaded from this <a href="">link</a>.
-
-
 Where: 
 - `directory` is the directory of where you want to download to.
+
+Alternatively, the data can be downloaded from this <a href="">link</a>.
+
 
 #### Visualising
 
