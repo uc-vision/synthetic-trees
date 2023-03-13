@@ -1,8 +1,8 @@
 # synthetic-trees
 
 ## Description
-This repository contains a library to open, visualize, process and evaluate tree point cloud skeletonization.
-We provide a multi-species synthetic dataset with ground truth skeletons. To understand how the data was created, aswell as the evaluation metrics used - please refer to our paper:
+This repository contains a library to open, visualize, process and evaluate tree point cloud skeletonization - using our dataset.
+We provide a multi-species synthetic dataset with ground truth skeletons. To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
 
 ```
 @inproceedings{TODO,
@@ -28,17 +28,17 @@ using:
 TODO
 ```
 
-Alternatively, the data can be downloaded from this <a href="">link</a>.
-
-
 Where: 
 - `directory` is the directory of where you want to download to.
+
+Alternatively, the data can be downloaded from this <a href="">link</a>.
+
 
 #### Visualising
 
 To visualize the data, use the `visualize.py` script. This can be called using:
 ```
-view-synthetic-trees -p=file_path -d=directory, -lw=linewidth
+view-synthetic-trees -p=file_path -d=directory -lw=linewidth
 ```
 
 Where:
@@ -66,7 +66,6 @@ This is done using the `process_results.py` script. This can be called using:
 
 ```
 process-synthetic-trees-results -p=path
-
 ```
 Where:
 - `path` is the path of the results csv from the evaluation step.
