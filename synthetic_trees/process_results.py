@@ -13,9 +13,9 @@ def parse_args():
     
     parser = argparse.ArgumentParser(description="Results directory.")
 
-    parser.add_argument("-d", "--directory",
-                        help="Results directory.", 
-                        required=False,
+    parser.add_argument("-p", "--path",
+                        help="Results path.", 
+                        required=True,
                         default="dataset", 
                         type=str)
 
@@ -26,7 +26,7 @@ def main():
 
   args = parse_args()
 
-  df = pd.read_csv(args.directory)
+  df = pd.read_csv(args.path)
   
   df["f1"] = (2 * ((df["recall"] * df["precision"]) / (df["recall"] + df["precision"]))).fillna(0)
 

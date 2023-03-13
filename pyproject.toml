@@ -22,8 +22,9 @@ dynamic = ["version"]
 find = {}  # Scan the project directory with the default parameters
 
 [project.scripts]
-view-synthetic-tree = "synthetic_trees.visualizer.view:main"
+view-synthetic-trees = "synthetic_trees.visualizer.view:main"
 download-synthetic-trees = "synthetic_trees.download:main"
-
+evaluate-synthetic-trees = "synthetic_trees.evaluate:main"
+process-synthetic-trees-results = "synthetic_trees.process_results:main"
 
 
