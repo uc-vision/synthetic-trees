@@ -73,4 +73,19 @@ def nn_frnn(src, dest, r=1.0, grid=None):
 
 
 
+def distance_matrix_keops(pts1, pts2):
+      
+  pts1 = torch.tensor(pts1).cuda().float()
+  pts2 = torch.tensor(pts2).cuda().float()
   
+  x_i = LazyTensor(pts1.reshape(-1, 1, 3).float())
+  y_j = LazyTensor(pts2.view(1, -1, 3).float()) 
+
+  return (x_i - y_j).square().sum(dim=2).sqrt()
+
+
+def nn_keops(pts1, pts2):
+      
+  D_ij = distance_matrix_keops(pts1, pts2)
+  
+  return D_ij.min(1), D_ij.argmin(1).flatten() # distance, idx 

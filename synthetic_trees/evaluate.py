@@ -32,8 +32,8 @@ def evaluate_one(gt_skeleton: TreeSkeleton, output_skeleton: o3d.cuda.pybind.geo
   gt_xyzs_c, gt_radii_c, output_pts_c = to_torch([gt_xyzs, gt_radii, output_pts], device=torch.device("cuda"))
 
   
-  print(recall(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), threshold=0.5))
-  print(precision(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), threshold=0.5))
+  print(recall(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=[0.5]))
+  print(precision(gt_xyzs_c, output_pts_c, gt_radii_c.reshape(-1), thresholds=[0.5]))
   
   
     
