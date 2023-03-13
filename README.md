@@ -66,7 +66,6 @@ This is done using the `process_results.py` script. This can be called using:
 
 ```
 process-synthetic-trees-results -p=path
-
 ```
 Where:
 - `path` is the path of the results csv from the evaluation step.
