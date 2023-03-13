@@ -1,7 +1,7 @@
 import numpy as np
 
 from dataclasses import dataclass
-from synthetic_trees.util.o3d_abstractions import o3d_cloud
+from ..util.o3d_abstractions import o3d_cloud
 
 
 @dataclass

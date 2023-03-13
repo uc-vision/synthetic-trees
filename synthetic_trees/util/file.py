@@ -5,9 +5,9 @@ from pathlib import Path
 from typing import Tuple
 
 
-from synthetic_trees.data_types.cloud import Cloud
-from synthetic_trees.data_types.tree import TreeSkeleton
-from synthetic_trees.data_types.branch import BranchSkeleton
+from ..data_types.cloud import Cloud
+from ..data_types.tree import TreeSkeleton
+from ..data_types.branch import BranchSkeleton
 
 
 def unpackage_data(data: dict) -> Tuple[Cloud, TreeSkeleton]:
