@@ -28,7 +28,7 @@
 
 ## Description
 We provide a multi-species synthetic dataset with ground truth skeletons. 
-This repository contains a library to open, visualize and evaluate skeletons against our data.
+This repository contains a library to open, visualize and evaluate skeletons.
 To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
 
 ```
