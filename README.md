@@ -38,7 +38,10 @@ Alternatively, the data can be downloaded from this <a href="">link</a>.
 
 To visualize the data, use the `visualize.py` script. This can be called using:
 ```
-view-synthetic-trees -p=file_path -d=directory -lw=linewidth
+view-synthetic-trees -p=file_path -lw=linewidth
+```
+```
+view-synthetic-trees -d=directory -lw=linewidth
 ```
 
 Where:
