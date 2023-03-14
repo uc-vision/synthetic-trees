@@ -1,5 +1,31 @@
 # synthetic-trees
 
+<table>
+<tr>
+  <td style="text-align: center"><img src="images/cherry-pcd.png", height=100%></td>
+  <td style="text-align: center"><img src="images/apple-pcd.png", height=100%></td>
+  <td style="text-align: center"><img src="images/pine-pcd.png", height=100%></td>
+</tr>
+<tr>
+  <td align="center">Sapling Cherry Point Cloud.</td>
+  <td align="center">Apple Tree Point Cloud.</td>
+  <td align="center">Pine Tree Point Cloud.</td>
+</tr>
+  
+<tr>
+<td style="text-align: center"><img src="images/cherry-skeleton.png", height=100%></td>
+<td style="text-align: center"><img src="images/apple-skeleton.png", height=100%></td>
+<td style="text-align: center"><img src="images/pine-skeleton.png", height=100%></td>
+</tr>
+<tr>
+  <td align="center">Sapling Cherry Ground Truth Skeleton.</td>
+  <td align="center">Apple Tree Ground Truth Skeleton.</td>
+  <td align="center">Pine Tree Ground Truth Skeleton.</td>
+</tr>  
+
+  
+</table>
+
 ## Description
 This repository contains a library to open, visualize, process and evaluate tree point cloud skeletonization - using our dataset.
 We provide a multi-species synthetic dataset with ground truth skeletons. To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
@@ -38,7 +64,10 @@ Alternatively, the data can be downloaded from this <a href="">link</a>.
 
 To visualize the data, use the `visualize.py` script. This can be called using:
 ```
-view-synthetic-trees -p=file_path -d=directory -lw=linewidth
+view-synthetic-trees -p=file_path -lw=linewidth
+```
+```
+view-synthetic-trees -d=directory -lw=linewidth
 ```
 
 Where:
