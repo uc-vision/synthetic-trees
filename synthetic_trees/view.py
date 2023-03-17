@@ -21,10 +21,12 @@ def view_synthetic_data(data: List[Tuple[Cloud, TreeSkeleton]], line_width=1):
         tree_name = path.stem
 
         names.append(f"{tree_name}_cloud")
+        names.append(f"{tree_name}_labelled_cloud")
         names.append(f"{tree_name}_skeleton")
         names.append(f"{tree_name}_skeleton_mesh")
 
         geometries.append(cloud.to_o3d_cloud())
+        geometries.append(cloud.to_o3d_cloud_labelled())
         geometries.append(skeleton.to_o3d_lineset())
         geometries.append(skeleton.to_o3d_tubes())
 
