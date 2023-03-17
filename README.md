@@ -27,8 +27,9 @@
 
 ## Description
 
-This repository contains a library to open, visualize, process and evaluate tree point cloud skeletonization - using our dataset.
-We provide a multi-species synthetic dataset with ground truth skeletons. To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
+We provide a multi-species synthetic dataset with ground truth skeletons.
+This repository contains a library to open, visualize and evaluate skeletons.
+To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
 
 ```
 @inproceedings{TODO,

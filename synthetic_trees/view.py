@@ -51,7 +51,7 @@ def main():
     args = parse_args()
 
     if args.file_path is not None:
-        data: Tuple[Tuple[Cloud, TreeSkeleton], str] = [
+        data: List[Tuple[Cloud, TreeSkeleton], str] = [
             (load_data_npz(args.file_path), Path(args.file_path))]
 
     if args.directory is not None:
