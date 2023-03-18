@@ -37,3 +37,7 @@ def unpackage_data(data: dict) -> Tuple[Cloud, TreeSkeleton]:
 def load_data_npz(path: Path) -> Tuple[Cloud, TreeSkeleton]:
 
     return unpackage_data(np.load(path))
+
+
+def load_o3d_cloud(path: Path):
+    return o3d.io.read_point_cloud(path)

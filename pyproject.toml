@@ -26,5 +26,6 @@ view-synthetic-trees = "synthetic_trees.view:main"
 download-synthetic-trees = "synthetic_trees.download:main"
 evaluate-synthetic-trees = "synthetic_trees.evaluate:main"
 process-synthetic-trees-results = "synthetic_trees.process_results:main"
+view-pointclouds = "synthetic_trees.view_clouds:main"
 
 
