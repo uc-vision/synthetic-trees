@@ -1,5 +1,11 @@
 # synthetic-trees
 
+## Description
+
+We provide a multi-species synthetic dataset with ground truth skeletons.
+This repository contains a library to open, visualize and evaluate skeletons.
+To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
+
 <table>
 <tr>
   <td style="text-align: center"><img src="images/cherry-pcd.png", height=100%></td>
@@ -25,41 +31,19 @@
 
 </table>
 
-## Description
-
-We provide a multi-species synthetic dataset with ground truth skeletons.
-This repository contains a library to open, visualize and evaluate skeletons.
-To understand how the data was created, aswell as the evaluation metrics used - please refer to our <a href="">paper</a>:
-
-```
-@inproceedings{TODO,
-    author = {TODO},
-     title = {{TODO}},
- booktitle = {TODO},
-     pages = {TODO},
-      year = {TODO}}
-```
-
-## Installation
-
-`pip install .`
-
 ## Usage
 
 #### Downloading
 
-To download the data, use the `download.py` script. This can be called
-using:
+The data can be downloaded from this <a href="https://www.dropbox.com/sh/dkp3sgw6wpdiaam/AAAIRy8liOpy-y9jM6KCiNpNa?dl=0">link</a>. <br>
+There is a json file defining the train, validation and test split. <br>
+The dataset contains the synthetic point clouds and ground truth skeletons. <br>
+The `evaluation` folder contains 'cleaned' point clouds and skeleton that are suitable for evaluation.
 
-```
-TODO
-```
+#### Installation
 
-Where:
+`pip install .`
 
-- `directory` is the directory of where you want to download to.
-
-Alternatively, the data can be downloaded from this <a href="">link</a>.
 
 #### Visualising
 
@@ -106,3 +90,14 @@ process-synthetic-trees-results -p=path
 Where:
 
 - `path` is the path of the results csv from the evaluation step.
+
+## Citation
+```
+@inproceedings{TODO,
+    author = {TODO},
+     title = {{TODO}},
+ booktitle = {TODO},
+     pages = {TODO},
+      year = {TODO}}
+```
+
