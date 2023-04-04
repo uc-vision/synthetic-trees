@@ -38,7 +38,7 @@ To understand how the data was created, aswell as the evaluation metrics used - 
 The data can be downloaded from this <a href="https://www.dropbox.com/sh/dkp3sgw6wpdiaam/AAAIRy8liOpy-y9jM6KCiNpNa?dl=0">link</a>. <br>
 There is a json file defining the train, validation and test split. <br>
 The dataset contains the synthetic point clouds and ground truth skeletons. <br>
-The `evaluation` folder contains 'cleaned' point clouds and skeleton that are suitable for evaluation.
+The `evaluation` folder contains 'cleaned' point clouds and skeletons that are suitable for evaluation.
 
 #### Installation
 
