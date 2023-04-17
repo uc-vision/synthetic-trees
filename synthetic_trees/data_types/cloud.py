@@ -19,5 +19,5 @@ class Cloud:
     def to_o3d_cloud(self):
         return o3d_cloud(self.xyz, colours=self.rgb)
 
-    def to_o3d_cloud_labelled(self, cmap=np.asarray([[0.53, 0.24, 0.13], [0.64, 0.92, 0.20]])):
+    def to_o3d_cloud_labelled(self, cmap=np.asarray([[0.53, 0.24, 0.13], [0.64, 0.92, 0.20], [1.0, 0.5, 0.3], [0.8, 1.0, 0.6]])):
         return o3d_cloud(self.xyz, colours=cmap[self.class_l])
