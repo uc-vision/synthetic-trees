@@ -40,9 +40,13 @@ You can download the data by following this <a href="https://www.dropbox.com/sh/
 #### Installation 
 To install:
 Create a conda enviroment:
-`conda create -n synthetic-trees python=3.8'
+
+`conda create -n synthetic-trees python=3.8`
+
+then:
 
 `pip install .` 
+
 #### Visualizing 
 To visualize the data, use the `visualize.py` script. You can call it using either: 
 
