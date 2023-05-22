@@ -1,4 +1,4 @@
-# 🌳🌲🌴 Synthetic-Trees 🌴🌲🌳
+# <center> 🌳🌲🌴 Synthetic-Trees 🌴🌲🌳 </center>
 
 ## 📝 Description
 
