@@ -1,6 +1,6 @@
-# synthetic-trees
+# 🌳🌲🌴 Synthetic-Trees 🌴🌲🌳
 
-## Description
+## 📝 Description
 
 This repository offers a synthetic point cloud dataset with ground truth skeletons of multiple species. Our library enables you to open, visualize, and assess the accuracy of the skeletons. To gain insight into how we created the data and the evaluation metrics employed, please refer to our published paper, available at this <a href="https://arxiv.org/abs/2303.11560">link</a>. Our dataset consists of two parts: one with point clouds that feature foliage, which is particularly useful for training models that can handle real-world data that includes leaves; the other contains only the branching structure and is less affected to occlusion.
 
@@ -30,14 +30,14 @@ This repository offers a synthetic point cloud dataset with ground truth skeleto
 
 </table>
 
-## Usage
+## 🔍 Usage
 
-#### Downloading
+#### 💾 Downloading
 
 You can download the data by following this <a href="https://www.dropbox.com/sh/dkp3sgw6wpdiaam/AAAIRy8liOpy-y9jM6KCiNpNa?dl=0">link</a>. The dataset includes synthetic point clouds and ground truth skeletons, along with a JSON file that specifies the training, validation, and test sets. For evaluation purposes, we have provided "cleaned" point clouds and skeletons in the evaluation folder, which are suitable for assessment.
 
 
-#### Installation 
+#### 🖥️ Installation 
 To install:
 Create a conda enviroment:
 
@@ -47,7 +47,7 @@ then:
 
 `pip install .` 
 
-#### Visualizing 
+#### 🕵️‍♂️ Visualizing 
 To visualize the data, use the `visualize.py` script. You can call it using either: 
 
 ``` view-synthetic-trees -p=file_path -lw=linewidth ``` 
@@ -59,7 +59,7 @@ where:
 - `directory` is the path of the folder containing `.npz` files.
 - `linewidth` is the width of the skeleton lines in the visualizer. 
 
-#### Evaluation 
+#### 📊 Evaluation 
 To evaluate your method against the ground truth data, use the `evaluate.py` script. You can call it using: 
 
 ``` evaluate-synthetic-trees -d_gt=ground_truth_directory -d_o=output_directory -r_o=results_save_path ``` 
@@ -69,14 +69,14 @@ where:
 - `output_directory` is the directory of the folder containing your skeleton outputs (in `.ply` format).
 - `results_save_path` is the path of the `.csv` file to save your results to. 
 
-#### Processing Results
+#### 📋 Processing Results
 After running the evaluation, you can use the `process_results.py` script to post-process the raw results and obtain metrics across the dataset. Call it using: 
 
 ``` process-synthetic-trees-results -p=path ``` 
 
 where: `path` is the path of the results `.csv` file from the evaluation step. 
 
-## Citation 
+## 📜 Citation 
 Please use the following BibTeX entry to cite our work: <br>
 ```
 @inproceedings{TODO,
