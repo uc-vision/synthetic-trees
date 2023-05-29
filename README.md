@@ -86,3 +86,8 @@ Please use the following BibTeX entry to cite our work: <br>
      pages = {TODO},
       year = {TODO}}
 ```
+
+## 📥 Contact 
+
+Should you have any questions, comments or suggestions please use the following contact details:
+harry.dobbs@pg.canterbury.ac.nz
