@@ -1,3 +1,6 @@
+from dataclasses import dataclass, asdict
+from typing import Sequence
+
 import open3d as o3d
 
 import numpy as np
@@ -110,37 +113,30 @@ def o3d_tube_mesh(points, radii, colour=(1,0,0), n=10):
 
   return mesh.paint_uniform_color(colour)
 
-
 def o3d_load_lineset(path, colour=[0,0,0]):
-
   return o3d.io.read_line_set(path).paint_uniform_color(colour)
 
 
-def o3d_nn(points, query_pts, query_radius, return_distances=True):
-  nsearch = ml3d.nn.RadiusSearch(return_distances=True)
-  idx, count, dist = nsearch(points, query_pts, query_radius)
-  return idx, count, dist
+@dataclass
+class ViewerItem:
+  name: str
+  geometry: o3d.geometry.Geometry
+  is_visible: bool = True
 
 
-def o3d_viewer(items, names=[], line_width=1):
+
+def o3d_viewer(items:Sequence[ViewerItem], line_width=1):
 
     mat = o3d.visualization.rendering.MaterialRecord()
     mat.shader = "defaultLit"
-
+ 
     line_mat = o3d.visualization.rendering.MaterialRecord()
     line_mat.shader = "unlitLine"
     line_mat.line_width = line_width
 
-    geometries = []
-    if len(names) == 0:
-        names = np.arange(0, len(items))
+    def material(item):
+      return line_mat if isinstance(item.geometry, o3d.geometry.LineSet) else mat
+      
 
-    for name, item in zip(names, items):
-        if type(item) == o3d.cuda.pybind.geometry.LineSet:
-            geometries.append(
-                {"name": f"{name}", "geometry": item, "material": line_mat, "is_visible": False})
-        else:
-            geometries.append(
-                {"name": f"{name}", "geometry": item, "material": mat, "is_visible": False})
-
+    geometries = [dict(**asdict(item), material=material(item)) for item in items]
     o3d.visualization.draw(geometries, line_width=line_width)
