@@ -39,7 +39,7 @@ You can download the data by following this <a href="https://www.dropbox.com/sh/
 
 #### 🖥️ Installation 
 To install:
-Create a conda enviroment:
+Create a conda environment:
 
 `conda create -n synthetic-trees python=3.8`
 
@@ -79,23 +79,13 @@ where: `path` is the path of the results `.csv` file from the evaluation step.
 ## 📜 Citation 
 Please use the following BibTeX entry to cite our work: <br>
 ```
-@InProceedings{10.1007/978-3-031-36616-1_28,
-author="Dobbs, Harry
-and Batchelor, Oliver
-and Green, Richard
-and Atlas, James",
-editor="Pertusa, Antonio
-and Gallego, Antonio Javier
-and S{\'a}nchez, Joan Andreu
-and Domingues, In{\^e}s",
-title="Smart-Tree: Neural Medial Axis Approximation of Point Clouds for 3D Tree Skeletonization",
-booktitle="Pattern Recognition and Image Analysis",
-year="2023",
-publisher="Springer Nature Switzerland",
-address="Cham",
-pages="351--362",
-abstract="This paper introduces Smart-Tree, a supervised method for approximating the medial axes of branch skeletons from a tree point cloud. Smart-Tree uses a sparse voxel convolutional neural network to extract the radius and direction towards the medial axis of each input point. A greedy algorithm performs robust skeletonization using the estimated medial axis. Our proposed method provides robustness to complex tree structures and improves fidelity when dealing with self-occlusions, complex geometry, touching branches, and varying point densities. We evaluate Smart-Tree using a multi-species synthetic tree dataset and perform qualitative analysis on a real-world tree point cloud. Our experimentation with synthetic and real-world datasets demonstrates the robustness of our approach over the current state-of-the-art method. The dataset (https://github.com/uc-vision/synthetic-trees) and source code (https://github.com/uc-vision/smart-tree) are publicly available.",
-isbn="978-3-031-36616-1"
+@inproceedings{dobbs2023smart,
+  title={Smart-Tree: Neural Medial Axis Approximation of Point Clouds for 3D Tree Skeletonization},
+  author={Dobbs, Harry and Batchelor, Oliver and Green, Richard and Atlas, James},
+  booktitle={Iberian Conference on Pattern Recognition and Image Analysis},
+  pages={351--362},
+  year={2023},
+  organization={Springer}
 }
 
 ```
