@@ -23,6 +23,8 @@ find = {}  # Scan the project directory with the default parameters
 
 [project.scripts]
 view-synthetic-trees = "synthetic_trees.view:main"
+test-contraction = "synthetic_trees.test_contraction:main"
+
 download-synthetic-trees = "synthetic_trees.download:main"
 evaluate-synthetic-trees = "synthetic_trees.evaluate:main"
 process-synthetic-trees-results = "synthetic_trees.process_results:main"

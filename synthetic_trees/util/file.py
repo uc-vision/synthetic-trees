@@ -19,7 +19,7 @@ def unpackage_data(data: dict) -> Tuple[Cloud, TreeSkeleton]:
     sizes = data["branch_num_elements"]
 
     cld = Cloud(
-        xyz=data["xyz"], rgb=data["rgb"], class_l=data["class_l"], vector=data["vector"]
+        xyz=data["xyz"], rgb=data["rgb"], class_l=data["class_l"], vector=data["medial_vector"]
     )
 
     offsets = np.cumsum(np.append([0], sizes))
