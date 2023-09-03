@@ -14,7 +14,7 @@ from data_types.tree import TreeSkeleton, repair_skeleton
 from data_types.cloud import Cloud
 
 from util.file import load_data_npz
-from util.o3d_abstractions import o3d_viewer, o3d_load_lineset, o3d_nn, o3d_cloud
+from util.o3d_abstractions import o3d_load_lineset
 from evaluation.results import save_results
 
 from util.operations import sample_o3d_lineset
