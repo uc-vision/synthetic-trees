@@ -13,9 +13,10 @@ from geometry_grid.taichi_geometry.grid import  Grid, morton_sort
 from geometry_grid.taichi_geometry.dynamic_grid import DynamicGrid
 from geometry_grid.taichi_geometry.counted_grid import CountedGrid
 
-from geometry_grid.taichi_geometry.point_query import point_query
+from geometry_grid.functional.point_query import point_query
+
+# 
 from geometry_grid.taichi_geometry.attract_query import attract_query
-from geometry_grid.taichi_geometry.point_distances import batch_distances_grad
 
 
 from geometry_grid.render_util import display_distances
@@ -46,6 +47,8 @@ def display_vectors(points, v):
       point_size=6
   )
 
+  
+
 
 def main():
     args = parse_args()
@@ -72,24 +75,36 @@ def main():
 
 
     print("Generate grid...")
-    seg_grid = CountedGrid.from_torch(
-        Grid.fixed_size(bounds, (16, 16, 16)), segments)
+    tube_grid = CountedGrid.from_torch(
+        Grid.fixed_size(bounds, (16, 16, 16)), tubes)
 
 
     point_grid = DynamicGrid.from_torch(
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
 
 
-    forces = attract_query(point_grid.index, points, 
-                          sigma=0.1, max_distance=0.1)
     
     # reg = forces * 0.001
 
-    dist, idx = point_query(seg_grid, points, 0.5)
-    point_grad, _ = batch_distances_grad(segments[idx], points, dist, dist.clone())
+    points.requires_grad_(True)
+    dist, idx = point_query(tube_grid, points, 0.5)
 
+    err = dist.pow(2).sum()
+    err.backward()
+    
 
-    display_vectors(points, point_grad)
+    # forces to regularize points and make them spread out
+    forces = attract_query(point_grid.index, points, 
+                          sigma=0.1, max_distance=0.1) * 0.01
+
+    # project forces along segment direction only
+    dirs = segments.unit_dir[idx]
+    print(dirs.shape, forces.shape)
+    forces = torch_geom.dot(dirs, forces).unsqueeze(1) * (forces / forces.norm(dim=-1, keepdim=True))
+    
+    print(forces.shape)
+
+    display_vectors(points, forces)
     
     # print("Grid size: ", seg_grid.grid.size)
     # cells, counts = seg_grid.active_cells()
