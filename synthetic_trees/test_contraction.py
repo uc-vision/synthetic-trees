@@ -9,13 +9,13 @@ from synthetic_trees.util.file import load_data_npz
 
 import geometry_grid.torch_geometry as torch_geom
 from geometry_grid.taichi_geometry.grid import  Grid, morton_sort
+from geometry_grid.taichi_geometry import Tube
 
 from geometry_grid.taichi_geometry.dynamic_grid import DynamicGrid
 from geometry_grid.taichi_geometry.counted_grid import CountedGrid
 
-from geometry_grid.functional.point_query import point_query
 
-# 
+from geometry_grid.functional.point_query import point_query
 from geometry_grid.taichi_geometry.attract_query import attract_query
 
 
@@ -25,6 +25,7 @@ import open3d as o3d
 
 
 import taichi as ti
+import taichi.math as tm
 
 
 def parse_args():
@@ -47,7 +48,13 @@ def display_vectors(points, v):
       point_size=6
   )
 
-  
+@ti.func
+def relative_distance(tube:Tube, p:tm.vec3):
+    t, dist_sq = tube.segment.point_dist_sq(p)
+    r = tube.radius_at(t)
+
+    print(t, dist_sq, r)
+    return ti.sqrt(dist_sq) / r
 
 
 def main():
@@ -76,20 +83,17 @@ def main():
 
     print("Generate grid...")
     tube_grid = CountedGrid.from_torch(
-        Grid.fixed_size(bounds, (16, 16, 16)), tubes)
+        Grid.fixed_size(bounds, (16, 16, 16)), segments)
 
 
     point_grid = DynamicGrid.from_torch(
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
 
 
-    
-    # reg = forces * 0.001
-
     points.requires_grad_(True)
     dist, idx = point_query(tube_grid, points, 0.5)
 
-    err = dist.pow(2).sum()
+    err = dist.sum()
     err.backward()
     
 
@@ -97,14 +101,14 @@ def main():
     forces = attract_query(point_grid.index, points, 
                           sigma=0.1, max_distance=0.1) * 0.01
 
-    # project forces along segment direction only
-    dirs = segments.unit_dir[idx]
-    print(dirs.shape, forces.shape)
-    forces = torch_geom.dot(dirs, forces).unsqueeze(1) * (forces / forces.norm(dim=-1, keepdim=True))
+    # # project forces along segment direction only
+    # dirs = segments.unit_dir[idx]
+    # print(dirs.shape, forces.shape)
+    # forces = torch_geom.dot(dirs, forces).unsqueeze(1) * (forces / forces.norm(dim=-1, keepdim=True))
     
-    print(forces.shape)
+    # print(forces.shape)
 
-    display_vectors(points, forces)
+    display_vectors(points, points.grad * 0.01)
     
     # print("Grid size: ", seg_grid.grid.size)
     # cells, counts = seg_grid.active_cells()
