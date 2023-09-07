@@ -15,8 +15,9 @@ from geometry_grid.taichi_geometry.dynamic_grid import DynamicGrid
 from geometry_grid.taichi_geometry.counted_grid import CountedGrid
 
 
-from geometry_grid.functional.point_query import point_query
+from geometry_grid.functional.distance import batch_point_distances
 from geometry_grid.taichi_geometry.attract_query import attract_query
+from geometry_grid.taichi_geometry.min_query import min_query
 
 
 from geometry_grid.render_util import display_distances
@@ -49,12 +50,18 @@ def display_vectors(points, v):
   )
 
 @ti.func
-def relative_distance(tube:Tube, p:tm.vec3):
+def relative_distance(tube:Tube, p:tm.vec3, query_radius:ti.f32):
     t, dist_sq = tube.segment.point_dist_sq(p)
+    dist = ti.sqrt(dist_sq)
     r = tube.radius_at(t)
 
-    print(t, dist_sq, r)
-    return ti.sqrt(dist_sq) / r
+    return ti.select((dist - r) < query_radius, 
+                     ti.sqrt(dist_sq) / r, torch.inf)
+ 
+
+def nearest_branch (grid, points:torch.Tensor, query_radius:float):
+  return min_query(grid, points, query_radius, relative_distance)
+
 
 
 def main():
@@ -83,23 +90,26 @@ def main():
 
     print("Generate grid...")
     tube_grid = CountedGrid.from_torch(
-        Grid.fixed_size(bounds, (16, 16, 16)), segments)
+        Grid.fixed_size(bounds, (16, 16, 16)), tubes)
 
 
     point_grid = DynamicGrid.from_torch(
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
 
+    # Find nearest tube for each point based on distance / radius
+    _, idx = min_query(tube_grid, points, 0.1, relative_distance)
+
 
     points.requires_grad_(True)
-    dist, idx = point_query(tube_grid, points, 0.5)
+    dist = batch_point_distances(segments[idx], points)
 
-    err = dist.sum()
+    err = dist.pow(2).sum()
     err.backward()
     
 
     # forces to regularize points and make them spread out
     forces = attract_query(point_grid.index, points, 
-                          sigma=0.1, max_distance=0.1) * 0.01
+                          sigma=0.1, max_distance=0.1) * 0.1
 
     # # project forces along segment direction only
     # dirs = segments.unit_dir[idx]
@@ -108,7 +118,7 @@ def main():
     
     # print(forces.shape)
 
-    display_vectors(points, points.grad * 0.01)
+    display_vectors(points, points.grad * 0.1)
     
     # print("Grid size: ", seg_grid.grid.size)
     # cells, counts = seg_grid.active_cells()
