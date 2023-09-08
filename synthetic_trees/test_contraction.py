@@ -1,8 +1,9 @@
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 
 from pathlib import Path
 import torch
+from synthetic_trees.data_types.tree import repair_skeleton
 
 from synthetic_trees.data_types.tube import collate_tubes
 from synthetic_trees.util.file import load_data_npz
@@ -64,6 +65,13 @@ def nearest_branch (grid, points:torch.Tensor, query_radius:float):
 
 
 
+# @ti.kernel
+# def min_ray_segments(ray:ti.types.ndarray(dtype=vec6), 
+#                      segments:ti.types.ndarray(dtype=vec6)):
+   
+   
+
+
 def main():
     args = parse_args()
 
@@ -71,6 +79,7 @@ def main():
 
     cloud, skeleton = load_data_npz(args.file_path)
     # view_synthetic_data([(data, args.file_path)])
+    skeleton = repair_skeleton(skeleton)
 
 
     device = torch.device(args.device)
@@ -97,19 +106,19 @@ def main():
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
 
     # Find nearest tube for each point based on distance / radius
-    _, idx = min_query(tube_grid, points, 0.1, relative_distance)
+    _, idx = min_query(tube_grid, points, 0.2, relative_distance)
 
 
     points.requires_grad_(True)
     dist = batch_point_distances(segments[idx], points)
 
-    err = dist.pow(2).sum()
+    err = dist.pow(2).sum() * 0.5
     err.backward()
     
 
     # forces to regularize points and make them spread out
     forces = attract_query(point_grid.index, points, 
-                          sigma=0.1, max_distance=0.1) * 0.1
+                          sigma=0.1, query_radius=0.1) * 0.1
 
     # # project forces along segment direction only
     # dirs = segments.unit_dir[idx]
@@ -118,7 +127,16 @@ def main():
     
     # print(forces.shape)
 
-    display_vectors(points, points.grad * 0.1)
+    # display_vectors(points, -points.grad)
+    o3d.visualization.draw(
+      [ render.point_cloud(points, color=(0, 0, 1)),
+        render.point_cloud(points - points.grad, color=(0, 1, 0))
+      ],
+
+      point_size=6
+    )
+
+    
     
     # print("Grid size: ", seg_grid.grid.size)
     # cells, counts = seg_grid.active_cells()
