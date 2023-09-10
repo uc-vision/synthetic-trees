@@ -50,6 +50,7 @@ def pts_to_nearest_tube(pts: np.array, tubes: List[Tube]):
     idx = np.argmin(distances, 1)  # N
 
     # assert idx.shape[0] == pts.shape[0]
+
     # vector, idx , radius
     return projections[np.arange(pts.shape[0]), idx] - pts, idx, r[np.arange(pts.shape[0]), idx]
 

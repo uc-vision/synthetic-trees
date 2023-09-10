@@ -22,10 +22,10 @@ class CollatedTube:
 
 def collate_tubes(tubes: List[Tube]) -> CollatedTube:
 
-    a = np.stack([tube.a for tube in tubes])
-    b = np.stack([tube.b for tube in tubes])
+    a = np.concatenate([tube.a for tube in tubes]).reshape(-1, 3)
+    b = np.concatenate([tube.b for tube in tubes]).reshape(-1, 3)
 
-    r1 = np.array([tube.r1 for tube in tubes])
-    r2 = np.array([tube.r2 for tube in tubes])
+    r1 = np.asarray([tube.r1 for tube in tubes]).reshape(1, -1)
+    r2 = np.asarray([tube.r2 for tube in tubes]).reshape(1, -1)
 
     return CollatedTube(a, b, r1, r2)

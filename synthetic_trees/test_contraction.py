@@ -42,12 +42,12 @@ def parse_args():
 
     return parser.parse_args()
 
-def display_vectors(points, v):
+def display_vectors(points, v, point_size=3):
   o3d.visualization.draw(
       [render.segments(points, points + v, color=(1, 0, 0)),
         render.point_cloud(points, color=(0, 0, 1))],
 
-      point_size=6
+      point_size=point_size
   )
 
 @ti.func
@@ -65,17 +65,21 @@ def nearest_branch (grid, points:torch.Tensor, query_radius:float):
 
 
 
-# @ti.kernel
-# def min_ray_segments(ray:ti.types.ndarray(dtype=vec6), 
-#                      segments:ti.types.ndarray(dtype=vec6)):
-   
+def to_medial_axis(segments:torch.Tensor, points:torch.Tensor):
+    points = points.clone().requires_grad_(True)
+    dist = batch_point_distances(segments, points)
+
+    err = dist.pow(2).sum() * 0.5
+    err.backward()
+
+    return -points.grad
    
 
 
 def main():
     args = parse_args()
 
-    ti.init(arch=ti.gpu, debug=args.debug, log_level=ti.DEBUG)
+    ti.init(arch=ti.gpu, debug=args.debug, log_level=ti.INFO)
 
     cloud, skeleton = load_data_npz(args.file_path)
     # view_synthetic_data([(data, args.file_path)])
@@ -85,10 +89,12 @@ def main():
     device = torch.device(args.device)
     np_tubes = collate_tubes(skeleton.to_tubes())
 
+
     tubes = {k:torch.from_numpy(x).to(dtype=torch.float32, device=device) for k, x in asdict(np_tubes).items()}
 
     segments = torch_geom.Segment(tubes['a'], tubes['b'])
-    radii = torch.concatenate((tubes['r1'], tubes['r2']), -1)
+    radii = torch.stack((tubes['r1'], tubes['r2']), -1)
+
 
     tubes = torch_geom.Tube(segments, radii)
     bounds = tubes.bounds.union_all()
@@ -105,36 +111,36 @@ def main():
     point_grid = DynamicGrid.from_torch(
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
 
-    # Find nearest tube for each point based on distance / radius
-    _, idx = min_query(tube_grid, points, 0.2, relative_distance)
+    for i in range(500):
+      # Find nearest tube for each point based on distance / radius
+      _, idx = min_query(tube_grid, points, 0.2, relative_distance)
+      v = to_medial_axis(segments[idx], points)
+
+      points = points + v 
 
 
-    points.requires_grad_(True)
-    dist = batch_point_distances(segments[idx], points)
+      point_grid.update_objects(torch_geom.Point(points))
+      # forces to regularize points and make them spread out
+      forces = attract_query(point_grid.index, points, 
+                            sigma=0.05, query_radius=0.2) 
 
-    err = dist.pow(2).sum() * 0.5
-    err.backward()
-    
+      # # project forces along segment direction only
+      dirs = segments.unit_dir[idx]
+      forces = torch_geom.dot(dirs, forces).unsqueeze(1) * dirs
+      
 
-    # forces to regularize points and make them spread out
-    forces = attract_query(point_grid.index, points, 
-                          sigma=0.1, query_radius=0.1) * 0.1
-
-    # # project forces along segment direction only
-    # dirs = segments.unit_dir[idx]
-    # print(dirs.shape, forces.shape)
-    # forces = torch_geom.dot(dirs, forces).unsqueeze(1) * (forces / forces.norm(dim=-1, keepdim=True))
-    
-    # print(forces.shape)
+      if i % 10 == 0:
+        display_vectors(points, -forces * 0.1)
+      points = points - forces * 0.001
 
     # display_vectors(points, -points.grad)
-    o3d.visualization.draw(
-      [ render.point_cloud(points, color=(0, 0, 1)),
-        render.point_cloud(points - points.grad, color=(0, 1, 0))
-      ],
+    # o3d.visualization.draw(
+    #   [ render.point_cloud(points, color=(0, 0, 1)),
+    #     # render.point_cloud(points - points.grad, color=(0, 1, 0))
+    #   ],
 
-      point_size=6
-    )
+    #   point_size=6
+    # )
 
     
     

@@ -54,8 +54,6 @@ def repair_skeleton(skeleton: TreeSkeleton):
 
         connection_pt, connection_rad = parent_branch.closest_pt(
             pt=branch.xyz[[0]])
-        
-        print(connection_pt.shape, connection_rad.shape)
 
         branch.xyz = np.insert(branch.xyz, 0, connection_pt, axis=0)
         branch.radii = np.insert(branch.radii, 0, connection_rad, axis=0)

@@ -31,8 +31,9 @@ class BranchSkeleton:
                  and {self.radii} radii"
 
     def to_tubes(self) -> List[Tube]:
-        a_, b_, r1_, r2_ = self.xyz[:-
-                                    1], self.xyz[1:], self.radii[:-1], self.radii[1:]
+        a_, b_, r1_, r2_ = (
+            self.xyz[:-1], self.xyz[1:], self.radii[:-1], self.radii[1:])
+
         return [Tube(a, b, r1, r2) for a, b, r1, r2 in zip(a_, b_, r1_, r2_)]
 
     def closest_pt(self, pt: np.array):  # closest point on skeleton to query point
