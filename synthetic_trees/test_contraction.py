@@ -93,7 +93,8 @@ def main():
     tubes = {k:torch.from_numpy(x).to(dtype=torch.float32, device=device) for k, x in asdict(np_tubes).items()}
 
     segments = torch_geom.Segment(tubes['a'], tubes['b'])
-    radii = torch.stack((tubes['r1'], tubes['r2']), -1)
+    radii = torch.stack((tubes['r1'], tubes['r2']), -1).squeeze(0)
+
 
 
     tubes = torch_geom.Tube(segments, radii)
@@ -107,31 +108,44 @@ def main():
     tube_grid = CountedGrid.from_torch(
         Grid.fixed_size(bounds, (16, 16, 16)), tubes)
 
-
     point_grid = DynamicGrid.from_torch(
         Grid.fixed_size(bounds, (64, 64, 64)), torch_geom.Point(points))
+    
+    vis = o3d.visualization.VisualizerWithKeyCallback()
+    vis.create_window("test", width=800, height=600)
 
-    for i in range(500):
-      # Find nearest tube for each point based on distance / radius
+
+    pcd = render.point_cloud(points, color=(0, 0, 1))
+    vis.add_geometry(pcd)
+
+
+    def update_points(vis):
       _, idx = min_query(tube_grid, points, 0.2, relative_distance)
-      v = to_medial_axis(segments[idx], points)
 
-      points = points + v 
 
 
       point_grid.update_objects(torch_geom.Point(points))
       # forces to regularize points and make them spread out
       forces = attract_query(point_grid.index, points, 
-                            sigma=0.05, query_radius=0.2) 
+                            sigma=0.01, query_radius=0.02) 
 
       # # project forces along segment direction only
       dirs = segments.unit_dir[idx]
       forces = torch_geom.dot(dirs, forces).unsqueeze(1) * dirs
       
+      points.add_(-forces)
 
-      if i % 10 == 0:
-        display_vectors(points, -forces * 0.1)
-      points = points - forces * 0.001
+      to_axis = to_medial_axis(segments[idx], points)
+      points.add_(to_axis * 0.1 + torch.randn_like(points) * 0.0001)
+  
+      pcd.points = o3d.utility.Vector3dVector(points.cpu().numpy())
+      vis.update_geometry(pcd)
+
+
+    vis.register_key_callback(ord(' '), update_points)
+
+    while (True):
+      vis.poll_events()
 
     # display_vectors(points, -points.grad)
     # o3d.visualization.draw(
