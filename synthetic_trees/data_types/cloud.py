@@ -25,6 +25,7 @@ class Cloud:
     def to_o3d_cloud_labelled(self, cmap=None):
         if cmap is None:
             cmap = np.random.rand(self.number_classes, 3)
+
         return o3d_cloud(self.xyz, colours=cmap[self.class_l])
 
     def to_o3d_medial_vectors(self, cmap=None):
@@ -62,4 +63,4 @@ class Cloud:
 
     @property
     def number_classes(self):
-        return max(self.class_l) + 1
+        return torch.max(self.class_l) + 1
