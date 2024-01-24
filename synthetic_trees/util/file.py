@@ -18,11 +18,13 @@ def unpackage_data(data: dict) -> Tuple[Cloud, TreeSkeleton]:
     skeleton_radii = data["skeleton_radii"]
     sizes = data["branch_num_elements"]
 
+    medial_vector = data.get("medial_vector", data.get("vector", None))
+
     cld = Cloud(
         xyz=data["xyz"],
         rgb=data["rgb"],
         class_l=data["class_l"],
-        medial_vector=data["medial_vector"],
+        medial_vector=medial_vector,
     )
 
     offsets = np.cumsum(np.append([0], sizes))
